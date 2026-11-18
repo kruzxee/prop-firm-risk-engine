@@ -44,6 +44,20 @@ session, possibly empty). Implementations are swappable.
 - Optional per-trade `mfe_r` / `mae_r` (max favourable / adverse excursion, in
   R) to drive intraday drawdown checks.
 
+Implementation conventions (`src/pfsim/trades.py`):
+- `mfe_r` and `mae_r` are **non-negative magnitudes**; a trade must satisfy
+  `-mae_r ≤ r_multiple ≤ mfe_r` and `mae_r ≤ 1` (the stop).
+- The generator returns **candidate** trades for a day; the trader policy
+  decides how many are taken.
+- Excursion models: `none` (the trade goes straight to its result) and
+  `uniform` (the unseen side of the path is uniform between the minimum the
+  result implies and its cap: the stop for MAE, the best R for MFE).
+- Common random numbers: each trade always consumes three uniforms (outcome,
+  MAE, MFE), mapped by inverse CDF, so changing sizing, excursion model or win
+  rate re-maps the same draws rather than reshuffling them.
+- With EOD high-water-mark updates, **only MAE affects outcomes** (intraday
+  drawdown and equity-based daily limit). MFE is carried for later analysis.
+
 ### Later: empirical generator
 Resamples a real trade list. Columns:
 
