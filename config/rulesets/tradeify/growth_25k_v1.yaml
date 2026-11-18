@@ -1,0 +1,46 @@
+# Tradeify Growth 25K — EVALUATION rules. Values supplied by the owner on 2026-11-17.
+# All values confirmed by the owner on 2026-11-17.
+meta:
+  firm: Tradeify
+  plan: Growth 25K (evaluation)
+  version: 1
+  effective_date: 2026-11-17   # date the values were recorded
+  source: https://tradeify.co/
+  notes: >-
+    No lock level on evaluation; owner suggests $25,500 if one is assumed.
+    With EOD trailing and an EOD pass check, the floor only reaches $25,500
+    when the EOD high-water mark equals the target balance, which is already a
+    pass, so a lock cannot change evaluation outcomes. Funded rules (35%
+    consistency, 5 min days) belong in a separate funded rule set.
+
+account:
+  start_balance: 25000
+
+profit_target:
+  amount: 1500            # closed-balance target = 26500
+
+drawdown:
+  mode: trailing
+  amount: 1000
+  hwm_update: eod
+  breach_check: intraday  # equity below floor at any point = attempt fails (hard)
+  lock_level: null        # no lock on evaluation
+
+daily_loss_limit:
+  enabled: true
+  amount: 600
+  basis: equity           # open + closed P&L, from prior day close
+  kind: soft              # breach ends the day, not the attempt
+
+consistency:
+  enabled: false          # not applicable on evaluation
+
+min_trading_days:
+  days: 0                 # none on evaluation
+  min_day_profit: null
+
+max_contracts:            # 1 mini or 10 micros
+  NQ: 1
+  ES: 1
+  MNQ: 10
+  MES: 10

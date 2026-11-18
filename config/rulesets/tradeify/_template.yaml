@@ -1,0 +1,45 @@
+# EXAMPLE ONLY — every value marked TODO is a placeholder, NOT a real Tradeify rule.
+# Do not run simulations on this file until the owner supplies real values and
+# the file is renamed to <plan>_v<version>.yaml.
+meta:
+  firm: Tradeify
+  plan: TODO            # plan name / account size
+  version: 1
+  effective_date: TODO  # YYYY-MM-DD the rules were read
+  source: TODO          # URL of the firm's rules page
+  notes: "Placeholder file; values pending owner input."
+
+account:
+  start_balance: null   # TODO
+
+profit_target:
+  amount: null          # TODO dollars, closed balance
+
+drawdown:
+  mode: trailing        # TODO confirm trailing vs static
+  amount: null          # TODO
+  hwm_update: eod       # TODO confirm eod vs intraday
+  breach_check: intraday  # TODO confirm
+  lock_level: null      # TODO balance where the floor stops trailing
+
+daily_loss_limit:
+  enabled: true         # TODO confirm the plan has one
+  amount: null          # TODO
+  basis: realized       # TODO realized vs equity
+  kind: soft            # TODO soft vs hard
+
+consistency:
+  enabled: true         # TODO confirm
+  max_best_day_pct: null  # TODO e.g. as a fraction 0-1
+  denominator: total_profit  # TODO total_profit vs profit_target
+  wording: TODO         # paste firm wording verbatim
+
+min_trading_days:
+  days: null            # TODO
+  min_day_profit: null  # TODO or null if any traded day counts
+
+max_contracts:
+  NQ: null              # TODO
+  MNQ: null             # TODO
+  ES: null              # TODO
+  MES: null             # TODO

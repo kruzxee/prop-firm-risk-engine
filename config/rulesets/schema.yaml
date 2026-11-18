@@ -1,0 +1,67 @@
+# Rule-set schema (JSON Schema draft 2020-12, written in YAML).
+# Documents the shape of every file under config/rulesets/.
+# Enforcement in code arrives in a later step; for now tests only check that
+# files parse and carry the required metadata.
+$schema: "https://json-schema.org/draft/2020-12/schema"
+title: Prop-firm evaluation rule set
+type: object
+required: [meta, account, profit_target, drawdown, daily_loss_limit, consistency, min_trading_days, max_contracts]
+additionalProperties: false
+properties:
+  meta:
+    type: object
+    required: [firm, plan, version, effective_date, source]
+    properties:
+      firm:            { type: string }
+      plan:            { type: string, description: "Plan / account size name as the firm lists it" }
+      version:         { type: integer, minimum: 1, description: "Bump when any value changes" }
+      effective_date:  { type: string, format: date }
+      source:          { type: string, description: "URL or document the values were taken from" }
+      notes:           { type: string }
+  account:
+    type: object
+    required: [start_balance]
+    properties:
+      start_balance:   { type: number, exclusiveMinimum: 0 }
+  profit_target:
+    type: object
+    required: [amount]
+    properties:
+      amount:          { type: number, exclusiveMinimum: 0, description: "Dollars above start balance, on closed balance" }
+  drawdown:
+    type: object
+    required: [mode, amount]
+    properties:
+      mode:            { enum: [trailing, static] }
+      amount:          { type: number, exclusiveMinimum: 0 }
+      hwm_update:      { enum: [eod, intraday], description: "When HWM can rise; ignored for static" }
+      breach_check:    { enum: [eod, intraday] }
+      lock_level:
+        description: "Floor stops trailing once it reaches this balance; null = never locks"
+        type: [number, "null"]
+  daily_loss_limit:
+    type: object
+    required: [enabled]
+    properties:
+      enabled:         { type: boolean }
+      amount:          { type: number, exclusiveMinimum: 0 }
+      basis:           { enum: [realized, equity] }
+      kind:            { enum: [soft, hard], description: "soft ends the day, hard ends the attempt" }
+  consistency:
+    type: object
+    required: [enabled]
+    properties:
+      enabled:         { type: boolean }
+      max_best_day_pct: { type: number, exclusiveMinimum: 0, maximum: 1 }
+      denominator:     { enum: [total_profit, profit_target] }
+      wording:         { type: string, description: "Firm's exact wording, verbatim" }
+  min_trading_days:
+    type: object
+    required: [days]
+    properties:
+      days:            { type: integer, minimum: 0 }
+      min_day_profit:  { type: [number, "null"], description: "Day counts only if P&L >= this; null = any traded day" }
+  max_contracts:
+    type: object
+    description: "Max open contracts per instrument"
+    additionalProperties: { type: integer, minimum: 1 }
